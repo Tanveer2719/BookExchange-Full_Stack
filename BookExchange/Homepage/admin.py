@@ -9,7 +9,7 @@ from .models import *
 # show Book table in admin page
 admin.site.register(Book)
 admin.site.register(Author)
-admin.site.register(User)
+admin.site.register(CustomUser)
 admin.site.register(BooksForSale)
 admin.site.register(PresentAddress)
 admin.site.register(BooksRequested)

@@ -23,4 +23,11 @@ urlpatterns = [
     # add the user to the DB
     path('adduser/post/', views.addUserRequestHandle, name='addUserHandle'),
     
+    #show the login page
+    path('login/', views.showLoginPage, name='login'),
+    
+    #handle the login request
+    path('login/post/', views.loginRequestHandle, name='loginHandle'),
+    
+    
 ]

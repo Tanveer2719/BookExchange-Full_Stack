@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
 """
 what is models ?
     It is basically the blueprint of the database
@@ -24,41 +26,39 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
-class User(models.Model):
-    username = models.CharField(max_length=255)
-    passwordHash = models.CharField(max_length=500)
+class CustomUser(AbstractUser):
     institution = models.CharField(max_length=100)
     dateOfRes = models.DateField(auto_now_add=True)
     phoneNo = models.CharField(max_length=11)
     email = models.EmailField(max_length=254)
-    rating = models.IntegerField()
-    
+    rating = models.IntegerField(null=True)
+
     def __str__(self):
         return self.username
  
 class BooksForSale(models.Model):
     bookId = models.ForeignKey(Book, on_delete=models.CASCADE) 
-    ownerId = models.ForeignKey(User, on_delete=models.CASCADE)
+    ownerId = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     price = models.IntegerField()
     availability = models.CharField(max_length=50)
 
     
 class PresentAddress(models.Model):
-    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    userId = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     place = models.CharField(max_length=255)
     upzilla = models.CharField(max_length=255)
     district = models.CharField(max_length=255)
     
 class BooksRequested(models.Model):
-    requesterId = models.ForeignKey(User, on_delete=models.CASCADE)
+    requesterId = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     bookTitle = models.CharField(max_length=255)
 
 class Notification(models.Model):
-    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    userId = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     msg = models.CharField(max_length=500)
     
 class BooksBought(models.Model):
-    userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    userId = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     bookId = models.ForeignKey(Book, on_delete=models.CASCADE)
     quantity = models.IntegerField()
 

@@ -1,12 +1,11 @@
 import json
 from django.shortcuts import render
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth import login,authenticate
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from .models import *
 from datetime import date
-# from django.views.decorators.csrf import csrf_exempt
-
-
 
 """
 what is views ?
@@ -24,6 +23,7 @@ def bookDetails(request, bookId):
     return HttpResponse("<h1>The Id you have entered is: "+str(bookId)+"</h1>")
 
 # show the page to add book
+@login_required(login_url='login.html')
 def addBook(request):
     return render(request, 'addBook.html')
 
@@ -65,14 +65,13 @@ def addUser(request):
 
 # handle the jsonRequest of AddUser
 def addUserRequestHandle(request):
-    print('user addition request received')
     if request.method == 'POST': 
         try:
             json_data = json.loads(request.body)
                 
-            new_user = User.objects.create(
+            new_user = CustomUser.objects.create(
                 username = json_data.get("username"), 
-                passwordHash = make_password(json_data.get("passwordHash")),
+                password = make_password(json_data.get("passwordHash")),
                 institution = json_data.get("institution"), 
                 dateOfRes = date.today(), 
                 phoneNo = json_data.get("phoneNo"),
@@ -97,7 +96,6 @@ def addUserRequestHandle(request):
  
 # handle getBooksRequest   
 def getBooksRequestHandler(request):
-    print('books requested from frontend')
     books = Book.objects.order_by('?')[:2]
     books_json = []
     for book in books:
@@ -111,3 +109,33 @@ def getBooksRequestHandler(request):
         books_json.append(book_dict)
     return JsonResponse(books_json, safe= False)
 
+# show login page
+def showLoginPage(request):
+    return render(request, 'login.html')
+
+# handle login request
+def loginRequestHandle(request):
+    if request.method == 'POST': 
+        try:
+            json_data = json.loads(request.body)
+                
+            
+            username = json_data.get("username") 
+            password = json_data.get("passwordHash")
+            
+            # print(username + " "+ password)
+
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                print("Success")
+                return JsonResponse({'message': 'Login successful'}, status=201)
+            else:
+                print("No success")
+                return JsonResponse({'message': 'User not found'}, status=401)
+            
+        
+        except json.JSONDecodeError:
+            return HttpResponseBadRequest('Invalid JSON data')
+    else:
+        return HttpResponseBadRequest('Only POST requests are allowed')

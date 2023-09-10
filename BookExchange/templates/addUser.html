@@ -51,7 +51,10 @@
             var phoneNumber = document.getElementById("phoneNo").value;
             var isValid = validatePhoneNumber(phoneNumber);
 
-            if (isValid) {
+            var password = document.getElementById("password").value;
+            var passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+            if (isValid && password.match(passwordRegex)) {
                 var formData = {
                     "username": document.getElementById("username").value,
                     "passwordHash": document.getElementById("password").value,
@@ -80,7 +83,10 @@
                 
             } else {
                 var resultElement = document.getElementById("result");
-                resultElement.innerHTML = "Invalid phone number";
+                if(! isValid)
+                    resultElement.innerHTML = "Invalid phone number";
+                else 
+                    resultElement.innerHTML = "Password must be 8 characters long and must contain letters and numbers";
             } 
         }
     </script>
