@@ -16,9 +16,6 @@
         <label for="publisher">Publisher:</label>
         <input type="text" id="publisher" name="publisher"><br>
 
-        <label for="imageUrl">Image URL:</label>
-        <input type="text" id="imageUrl" name="imageUrl"><br>
-
         <label for="description">Description:</label>
         <input type="text" id="description" name="description"><br>
 
@@ -26,6 +23,8 @@
         <input type="number" id="numAuthors" name="numAuthors" min="1"><br>
         <button type="button" onclick="generateAuthorInputs()">Generate Author Inputs</button>
         <div id="authorInputs"></div>
+
+        <input type="file" id="image-input" accept="image/*" required>
 
         <button type="button" onclick="submitForm()">Submit</button>
     </form>
@@ -35,7 +34,6 @@
             var title = document.getElementById("title").value;
             var edition = document.getElementById("edition").value;
             var publisher = document.getElementById("publisher").value;
-            var imageUrl = document.getElementById("imageUrl").value;
             var description = document.getElementById("description").value;
 
             var numAuthors = parseInt(document.getElementById('numAuthors').value);
@@ -52,26 +50,44 @@
                 authors.push(authorJson);
             }
 
-            var jsonData = {
-                "title": title,
-                "edition": edition,
-                "publisher": publisher,
-                "imageUrl": imageUrl,
-                "description": description,
-                "authorsOfBook": authors
-            };
+            const inputElement = document.getElementById("image-input");
+            const file = inputElement.files[0];
 
-            fetch('post/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                },
-                body: JSON.stringify(jsonData),
-            })
-            .then(response => response.json())
-            .then(data => console.log(data))
-            .catch(error => console.error('Error:', error));
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    const base64Data = event.target.result.split(",")[1];
+    
+                    const imageData = {
+                        filename: file.name,
+                        data: base64Data
+                    };
+
+
+                    var jsonData = {
+                        "title": title,
+                        "edition": edition,
+                        "publisher": publisher,
+                        "image": imageData,
+                        "description": description,
+                        "authorsOfBook": authors
+                    };
+
+                    fetch('post/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                        },
+                        body: JSON.stringify(jsonData),
+                    })
+                    .then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+                };
+                reader.readAsDataURL(file);
+            }
         }
 
         function generateAuthorInputs() {

@@ -8,26 +8,31 @@ urlpatterns = [
     # handle book request
     path('getbooks/', views.getBooksRequestHandler, name='getBooksRequestHandle'),
 
-    # homepage/showbook/<id>          
-    path('showbook/<int:bookId>/', views.bookDetails, name='book_details'),
-    
-    # show the from for addBook
-    path('addbook/', views.addBook, name='add_book'),
+    # homepage/showbook/<id> 
+    path('getbook/<int:id>/', views.bookDetails, name='book_details'),         
     
     # add the book to the dataBase 
-    path('addbook/post/', views.addBookRequestHandle, name='addBookHandle'),  
-    
-    # show the page for addUser
-    path('adduser/', views.addUser, name='add_user'),
+    path('addbook/', views.addBookRequestHandle, name='addBookHandle'),  
     
     # add the user to the DB
-    path('adduser/post/', views.addUserRequestHandle, name='addUserHandle'),
+    path('signup/', views.addUserRequestHandle, name='addUser'),
     
-    #show the login page
-    path('login/', views.showLoginPage, name='login'),
+    # for login authentication
+    path('login/', views.loginRequestHandle, name='loginHandle'),
     
-    #handle the login request
-    path('login/post/', views.loginRequestHandle, name='loginHandle'),
+    # for user information
+    path('userinfo/', views.getUserInfo, name='getUserInfo'),
     
+    #for book request
+    path('request/', views.addRequest, name='addRequest'),
+    
+    #for otp send
+    path('sendotp/',views.sendOTP, name='sendotp'),
+    
+    # for otp confirm
+    path('confirmotp/',views.confirmOTP, name='confirmotp'),
+    
+    # for user profile
+    path('getUser/',views.getProfile, name='userProfile'),
     
 ]

@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from rest_framework.authtoken.models import Token
+
 
 """
 what is models ?
@@ -27,6 +29,7 @@ class Book(models.Model):
         return self.title
 
 class CustomUser(AbstractUser):
+    fullName = models.CharField(max_length=250, null=True)
     institution = models.CharField(max_length=100)
     dateOfRes = models.DateField(auto_now_add=True)
     phoneNo = models.CharField(max_length=11)
