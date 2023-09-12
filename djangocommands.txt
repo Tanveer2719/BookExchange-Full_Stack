@@ -1,9 +1,0 @@
-create new django project
-    django-admin startproject <projectname>
-create new app inside the django project
-    python3 manage.py startapp <appname>
-run the server
-    python3 manage.py runserver
-To add a tables to the database / update existing tables
-    python3 manage.py makemigrations <appname>
-    python3 manage.py migrate
